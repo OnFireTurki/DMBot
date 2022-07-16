@@ -28,7 +28,10 @@ def send_request(url, post=nil)
   response = http.request(request)
   return response
 end
+pust "Enter user:pass "
 user = gets.chomp.split(':')
+pust "\nThreadv2 ID : "
+TID = gets.chomp
 response = send_request("/api/v1/accounts/login/", "username=#{user[0]}&password=#{user[1]}&from_reg=false&device_id=#{@uuid}&_uuid=#{@uuid}&_csrftoken=SAEsY7ffVN12IG6J8JZ1j4Bx83j1GRou")
 if response.body.include?("logged_in_user")
   all_cookies = response.get_fields('set-cookie')
@@ -42,10 +45,10 @@ if response.body.include?("logged_in_user")
     begin
       text = JSON.parse(send_request("/api/v1/direct_v2/threads/#{@id}/?use_unified_inbox=true").body)['thread']['items'][0]
       if text['text'] != @last_text
-        send_request("/api/v1/direct_v2/threads/#{@id}/items/#{text['item_id']}/seen/", "").body
+        send_request("/api/v1/direct_v2/threads/#{@TID}/items/#{text['item_id']}/seen/", "").body
         @last_text = text['text']
         if @last_text.include? "$add"
-          send_request("/api/v1/direct_v2/threads/340282366841710300949128133578108865361/add_user/", "_csrftoken=missing&user_ids=[\"#{text['text'].scan(/\d/).join("").to_s}\"]&_uuid=#{@uuid}&use_unified_inbox=true").body
+          send_request("/api/v1/direct_v2/threads/#{id}/add_user/", "_csrftoken=missing&user_ids=[\"#{text['text'].scan(/\d/).join("").to_s}\"]&_uuid=#{@uuid}&use_unified_inbox=true").body
           end
       end
       sleep(30)

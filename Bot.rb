@@ -28,7 +28,7 @@ def send_request(url, post=nil)
   response = http.request(request)
   return response
 end
-user = "testop5_:5bubhere".split(':')#gets.chomp.split(':')#testop5_:5bubhere
+user = gets.chomp.split(':')
 response = send_request("/api/v1/accounts/login/", "username=#{user[0]}&password=#{user[1]}&from_reg=false&device_id=#{@uuid}&_uuid=#{@uuid}&_csrftoken=SAEsY7ffVN12IG6J8JZ1j4Bx83j1GRou")
 if response.body.include?("logged_in_user")
   all_cookies = response.get_fields('set-cookie')

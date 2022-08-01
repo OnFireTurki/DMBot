@@ -5,7 +5,6 @@ require 'securerandom'
 require 'json'
 @last_text = "Gg"
 @uuid = SecureRandom.uuid
-@id = "Your chat id"
 Sessoins = Net::HTTPSession
 @header = {'User-Agent' => 'Instagram 113.0.0.39.122 Android (24/5.0; 515dpi; 1440x2416; huawei/google; Nexus 6P; angler; angler; en_US)',
            'Accept' => '*/*',
@@ -43,12 +42,12 @@ if response.body.include?("logged_in_user")
   @header.merge!('Cookie' => cookies)
   while true
     begin
-      text = JSON.parse(send_request("/api/v1/direct_v2/threads/#{@id}/?use_unified_inbox=true").body)['thread']['items'][0]
+      text = JSON.parse(send_request("/api/v1/direct_v2/threads/#{@TID}/?use_unified_inbox=true").body)['thread']['items'][0]
       if text['text'] != @last_text
         send_request("/api/v1/direct_v2/threads/#{@TID}/items/#{text['item_id']}/seen/", "").body
         @last_text = text['text']
         if @last_text.include? "$add"
-          send_request("/api/v1/direct_v2/threads/#{id}/add_user/", "_csrftoken=missing&user_ids=[\"#{text['text'].scan(/\d/).join("").to_s}\"]&_uuid=#{@uuid}&use_unified_inbox=true").body
+          send_request("/api/v1/direct_v2/threads/#{TID}/add_user/", "_csrftoken=missing&user_ids=[\"#{text['text'].scan(/\d/).join("").to_s}\"]&_uuid=#{@uuid}&use_unified_inbox=true").body
           end
       end
       sleep(30)
